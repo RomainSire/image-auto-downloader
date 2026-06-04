@@ -86,13 +86,28 @@ pnpm lint         # ESLint
 pnpm format       # Prettier
 ```
 
-## Build (Windows)
+## Build
 
 ```bash
-pnpm build:win    # typecheck + build + .exe via electron-builder
+pnpm build:win      # installeur Windows (.exe NSIS)
+pnpm build:linux    # Linux (.AppImage + .deb + .rpm)
+pnpm build:mac      # macOS (.dmg) — à lancer sur un Mac
 ```
 
-La cible est **Windows uniquement** (PC de montage). Pas d'auto-update : les mises à jour sont rares et manuelles.
+La cible **primaire est Windows** (PC de montage), mais le code étant 100 % cross-platform, les binaires **macOS** et **Linux** sont aussi fournis. Pas d'auto-update : les mises à jour sont rares et manuelles.
+
+> ⚠️ Le `.dmg` macOS doit être généré **sur un Mac** (création + signature impossibles depuis Linux/Windows). Les paquets `.deb`/`.rpm` Linux sont produits par `fpm`, dont le ruby embarqué nécessite `libcrypt.so.1` sur la machine de build (présent sur Ubuntu ; sur Fedora : `sudo dnf install libxcrypt-compat`). Le `.rpm` requiert aussi `rpmbuild` (paquet `rpm` ; le runner CI Ubuntu l'installe automatiquement). L'`.AppImage`, lui, n'a aucune de ces dépendances.
+
+### Releases multi-OS (CI)
+
+Le workflow [`.github/workflows/release.yml`](.github/workflows/release.yml) compile les 3 OS sur des runners natifs GitHub Actions. Pour publier une version :
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0   # → build win/mac/linux + binaires attachés à la Release
+```
+
+Un déclenchement manuel (_workflow_dispatch_) produit les mêmes binaires en _artifacts_ téléchargeables, sans créer de Release.
 
 ## Structure du projet
 

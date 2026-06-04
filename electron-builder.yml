@@ -26,4 +26,25 @@ nsis:
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
   createStartMenuShortcut: true
+mac:
+  icon: build/icon.icns
+  category: public.app-category.utilities
+  target:
+    - dmg
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  # Pas de compte Apple Developer → build non signé / non notarisé.
+  notarize: false
+dmg:
+  artifactName: ${name}-${version}.${ext}
+linux:
+  icon: build/icon.png
+  category: Utility
+  maintainer: Romain <rsire@tuta.io>
+  target:
+    - AppImage
+    - deb
+    - rpm
+appImage:
+  artifactName: ${name}-${version}.${ext}
 npmRebuild: false

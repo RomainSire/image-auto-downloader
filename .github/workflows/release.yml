@@ -1,0 +1,75 @@
+name: Build & Release
+
+# Compile les binaires des 3 OS sur des runners natifs (seule façon de produire
+# un .dmg macOS propre). Déclenché par un tag `vX.Y.Z` (→ publie sur la Release)
+# ou manuellement (→ artifacts téléchargeables, sans publier).
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write # nécessaire pour créer/alimenter la Release
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            script: build:win
+          - os: macos-latest
+            script: build:mac
+          - os: ubuntu-latest
+            script: build:linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # fpm a besoin de `rpmbuild` pour packager le .rpm sur le runner Ubuntu.
+      - name: Install rpm tooling (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y rpm
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build (${{ matrix.script }})
+        run: pnpm run ${{ matrix.script }}
+        env:
+          # Pas de certificat Apple → build macOS non signé / non notarisé.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}
+          if-no-files-found: ignore
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.rpm
+
+      - name: Attach to Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          fail_on_unmatched_files: false
+          files: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.rpm
