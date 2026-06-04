@@ -176,12 +176,22 @@ body {
   color: #f87171;
 }
 
+/* 0 résultat : ni succès ni erreur → ton neutre/ambre. */
+.source-progress[data-state='empty'] {
+  color: #fbbf24;
+}
+
 /* L'erreur occupe toute la largeur sous la grille à 3 colonnes. */
 .source-error {
   grid-column: 1 / -1;
   margin: 0;
   font-size: 12px;
   color: #f87171;
+}
+
+/* Note « aucun résultat » : moins alarmant qu'une erreur. */
+.source-error[data-state='empty'] {
+  color: #fbbf24;
 }
 
 .source-error[hidden] {

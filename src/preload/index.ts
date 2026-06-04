@@ -16,6 +16,8 @@ const api = {
   download: (req: DownloadRequest): Promise<DownloadSummary> => ipcRenderer.invoke('download', req),
   openFolder: (absolutePath: string): Promise<string> =>
     ipcRenderer.invoke('open-folder', absolutePath),
+  folderExists: (absolutePath: string): Promise<boolean> =>
+    ipcRenderer.invoke('folder-exists', absolutePath),
   // S'abonne aux events de progression ; renvoie une fonction de désabonnement.
   onProgress: (cb: (p: ProgressEvent) => void): (() => void) => {
     const listener = (_event: IpcRendererEvent, p: ProgressEvent): void => cb(p)

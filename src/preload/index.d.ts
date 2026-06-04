@@ -12,6 +12,8 @@ export interface Api {
   selectFolder: () => Promise<string | null>
   download: (req: DownloadRequest) => Promise<DownloadSummary>
   openFolder: (absolutePath: string) => Promise<string>
+  /** Vrai si le chemin existe et est un dossier (validation destination). */
+  folderExists: (absolutePath: string) => Promise<boolean>
   /** S'abonne à la progression ; renvoie une fonction de désabonnement. */
   onProgress: (cb: (p: ProgressEvent) => void) => () => void
 }

@@ -57,7 +57,7 @@ pnpm install
 
 ## Configuration des clés API
 
-Au premier lancement, si des clés manquent, l'app ouvre automatiquement le **panneau Réglages**. Y renseigner les clés Unsplash / Pexels / Pixabay (Openverse n'en demande pas) et le dossier de destination par défaut.
+Au premier lancement, si des clés manquent, l'app ouvre automatiquement le **panneau Réglages**. Y renseigner les clés Unsplash / Pexels / Pixabay (Openverse n'en demande pas). Le dossier de destination se choisit directement dans le formulaire principal (champ + bouton « Parcourir… ») ; le dernier dossier utilisé est mémorisé et pré-rempli au lancement suivant.
 
 Les réglages sont persistés dans `config.json`, situé dans le dossier `userData` d'Electron :
 

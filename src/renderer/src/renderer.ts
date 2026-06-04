@@ -246,7 +246,7 @@ async function handleDownload(): Promise<void> {
     input('subFolder').value = subFolder
   }
 
-  // Validation légère (la validation complète arrive en Phase 10).
+  // Validation des entrées (DEV_PLAN Phase 10).
   if (!keyword) return setDownloadStatus(t('download.errNoKeyword'), 'error')
   if (!destFolder) return setDownloadStatus(t('download.errNoDest'), 'error')
 
@@ -254,6 +254,11 @@ async function handleDownload(): Promise<void> {
   const active = SOURCE_IDS.filter((id) => sources[id].enabled && sources[id].count > 0)
   if (active.length === 0) {
     return setDownloadStatus(t('download.errNoSource'), 'error')
+  }
+
+  // Le dossier de destination doit exister (le sous-dossier, lui, est créé).
+  if (!(await window.api.folderExists(destFolder))) {
+    return setDownloadStatus(t('download.errDestMissing', { path: destFolder }), 'error')
   }
 
   const req: DownloadRequest = { keyword, destFolder, subFolder, sources }
@@ -282,6 +287,9 @@ async function handleDownload(): Promise<void> {
     }
     if (failed.length) {
       setDownloadStatus(t('download.doneWithErrors', { total, failed: failed.length }), 'error')
+    } else if (total === 0) {
+      // Aucune erreur mais aucune image : recherche sans résultat.
+      setDownloadStatus(t('download.empty'))
     } else {
       setDownloadStatus(t('download.doneOk', { total, path: summary.subFolderAbsolutePath }), 'ok')
     }
@@ -315,6 +323,7 @@ function resetSourceDisplays(active: SourceId[]): void {
     if (error) {
       error.hidden = true
       error.textContent = ''
+      delete error.dataset.state
     }
     if (progress) {
       if (active.includes(id)) {
@@ -360,13 +369,22 @@ function renderSummary(results: SourceResult[]): void {
     const block = sourceBlock(r.source)
     const progress = block.querySelector<HTMLElement>('.source-progress')
     const error = block.querySelector<HTMLElement>('.source-error')
+    // 0 résultat sans erreur = état « vide » (ni succès vert, ni erreur rouge).
+    const empty = !r.error && r.downloaded === 0
     if (progress) {
-      progress.textContent = `${r.downloaded}/${r.requested}${r.error ? '' : ' ✓'}`
-      progress.dataset.state = r.error ? 'error' : 'done'
+      progress.textContent = `${r.downloaded}/${r.requested}${r.error || empty ? '' : ' ✓'}`
+      progress.dataset.state = r.error ? 'error' : empty ? 'empty' : 'done'
     }
-    if (error && r.error) {
-      error.textContent = errorLabel(r.error)
-      error.hidden = false
+    if (error) {
+      if (r.error) {
+        error.textContent = errorLabel(r.error)
+        error.dataset.state = 'error'
+        error.hidden = false
+      } else if (empty) {
+        error.textContent = t('source.empty')
+        error.dataset.state = 'empty'
+        error.hidden = false
+      }
     }
   }
 }

@@ -1,4 +1,5 @@
 import { ipcMain, dialog, shell, BrowserWindow } from 'electron'
+import { stat } from 'node:fs/promises'
 import { getConfig, setConfig } from './config'
 import { download } from './downloader'
 import type { Config, DownloadRequest, DownloadSummary, ProgressEvent } from '../shared/types'
@@ -36,4 +37,13 @@ export function registerIpcHandlers(): void {
 
   // Ouvre le dossier dans l'Explorateur (shell.openPath).
   ipcMain.handle('open-folder', (_event, absolutePath: string) => shell.openPath(absolutePath))
+
+  // Vérifie qu'un chemin existe et est un dossier (validation destination, Phase 10).
+  ipcMain.handle('folder-exists', async (_event, absolutePath: string): Promise<boolean> => {
+    try {
+      return (await stat(absolutePath)).isDirectory()
+    } catch {
+      return false
+    }
+  })
 }

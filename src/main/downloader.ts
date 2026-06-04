@@ -27,6 +27,9 @@ import { SourceException, type ImageHit } from './sources/types'
 /** Téléchargements simultanés par source (évite de saturer réseau/API). */
 const CONCURRENCY = 4
 
+/** Délai max de téléchargement d'une image (ms) avant abandon. */
+const DOWNLOAD_TIMEOUT_MS = 30_000
+
 type Outcome = 'downloaded' | 'skipped' | 'failed'
 
 /** Clé API d'une source (Openverse est anonyme → chaîne vide). */
@@ -90,8 +93,9 @@ async function downloadOne(hit: ImageHit, source: SourceId, dir: string): Promis
 
   let res: Response
   try {
-    res = await fetch(hit.url)
+    res = await fetch(hit.url, { signal: AbortSignal.timeout(DOWNLOAD_TIMEOUT_MS) })
   } catch {
+    // Timeout réseau ou erreur de connexion → toléré (n'arrête pas la source).
     return 'failed'
   }
   if (!res.ok) return 'failed'

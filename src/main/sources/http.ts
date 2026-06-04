@@ -7,6 +7,9 @@ import { SourceException, type ImageHit } from './types'
 
 const USER_AGENT = 'image-auto-downloader/0.1 (+https://github.com/local)'
 
+/** Délai max d'une requête de recherche (ms) avant abandon. */
+const SEARCH_TIMEOUT_MS = 15_000
+
 /**
  * GET JSON avec mapping d'erreurs HTTP → `SourceException`.
  * `rateLimitStatuses` : statuts à considérer comme `rate_limit` pour cette
@@ -19,9 +22,16 @@ export async function fetchJson<T>(
 ): Promise<T> {
   let res: Response
   try {
-    res = await fetch(url, { headers: { 'User-Agent': USER_AGENT, ...headers } })
+    res = await fetch(url, {
+      headers: { 'User-Agent': USER_AGENT, ...headers },
+      signal: AbortSignal.timeout(SEARCH_TIMEOUT_MS)
+    })
   } catch (e) {
-    throw new SourceException({ type: 'api', message: `Réseau : ${(e as Error).message}` })
+    const message =
+      (e as Error)?.name === 'TimeoutError'
+        ? `Délai dépassé (${SEARCH_TIMEOUT_MS / 1000} s).`
+        : `Réseau : ${(e as Error).message}`
+    throw new SourceException({ type: 'api', message })
   }
 
   if (!res.ok) {
