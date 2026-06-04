@@ -6,14 +6,21 @@ import icon from '../../resources/icon.png?asset'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1000,
+    height: 720,
+    minWidth: 720,
+    minHeight: 560,
     show: false,
     autoHideMenuBar: true,
+    title: 'Image Auto Downloader',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      // Sécurité Electron : le renderer n'a jamais accès à Node brut,
+      // tout passe par le preload (contextBridge).
+      sandbox: false,
+      contextIsolation: true,
+      nodeIntegration: false
     }
   })
 
@@ -49,8 +56,9 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+  // IPC squelette (Phase 1) — round-trip de vérification, remplacé par les
+  // vrais handlers (config, download, folder…) dans les phases suivantes.
+  ipcMain.handle('ping', () => 'pong')
 
   createWindow()
 
