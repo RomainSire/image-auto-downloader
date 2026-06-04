@@ -12,6 +12,11 @@ on:
 permissions:
   contents: write # nécessaire pour créer/alimenter la Release
 
+# Fait tourner les actions JS (checkout, setup-node…) sur Node 24 : supprime le
+# warning de dépréciation de Node 20 (deviendra le défaut le 16 juin 2026).
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     strategy:
