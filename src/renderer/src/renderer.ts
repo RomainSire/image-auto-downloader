@@ -104,7 +104,6 @@ function fillSettings(config: Config): void {
   for (const id of API_KEY_IDS) {
     input(`key-${id}`).value = config.apiKeys[id]
   }
-  input('dest').value = config.lastDestination
 }
 
 function openSettings(missing?: ApiKeyId[]): void {
@@ -133,8 +132,7 @@ async function saveSettings(): Promise<void> {
       unsplash: input('key-unsplash').value.trim(),
       pexels: input('key-pexels').value.trim(),
       pixabay: input('key-pixabay').value.trim()
-    },
-    lastDestination: input('dest').value.trim()
+    }
   }
 
   setStatus(t('settings.saving'))
