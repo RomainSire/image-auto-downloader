@@ -24,12 +24,105 @@
 
       <main class="app-main">
         <section class="card">
-          <h2 class="card-title">Coquille prête</h2>
-          <p class="card-text">
-            L'interface de téléchargement sera construite dans les prochaines phases. Configurez vos
-            clés API dans les Réglages.
-          </p>
           <p class="status" id="apiStatus">Chargement de la configuration…</p>
+
+          <div class="form-row">
+            <label class="field">
+              <span class="field-label">Recherche (mot-clé)</span>
+              <input
+                class="field-input"
+                id="keyword"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="ex. ramen, tokyo night, hands cooking…"
+              />
+            </label>
+          </div>
+
+          <div class="form-row form-row-split">
+            <label class="field field-grow">
+              <span class="field-label">Dossier de destination</span>
+              <input
+                class="field-input"
+                id="destFolder"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="D:\BRoll"
+              />
+            </label>
+            <label class="field field-grow">
+              <span class="field-label">Sous-dossier</span>
+              <input
+                class="field-input"
+                id="subFolder"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="2026-06-04-ramen"
+              />
+            </label>
+          </div>
+
+          <div class="sources">
+            <div class="source-block" data-source="unsplash">
+              <label class="source-toggle">
+                <input class="source-enabled" type="checkbox" checked />
+                <span class="source-name">Unsplash</span>
+              </label>
+              <label class="source-count-field">
+                <span class="source-count-label">Nombre</span>
+                <input class="source-count" type="number" min="1" value="10" />
+              </label>
+              <span class="source-progress" data-state="idle">—</span>
+              <p class="source-error" hidden></p>
+            </div>
+
+            <div class="source-block" data-source="pexels">
+              <label class="source-toggle">
+                <input class="source-enabled" type="checkbox" checked />
+                <span class="source-name">Pexels</span>
+              </label>
+              <label class="source-count-field">
+                <span class="source-count-label">Nombre</span>
+                <input class="source-count" type="number" min="1" value="10" />
+              </label>
+              <span class="source-progress" data-state="idle">—</span>
+              <p class="source-error" hidden></p>
+            </div>
+
+            <div class="source-block" data-source="pixabay">
+              <label class="source-toggle">
+                <input class="source-enabled" type="checkbox" checked />
+                <span class="source-name">Pixabay</span>
+              </label>
+              <label class="source-count-field">
+                <span class="source-count-label">Nombre</span>
+                <input class="source-count" type="number" min="1" value="10" />
+              </label>
+              <span class="source-progress" data-state="idle">—</span>
+              <p class="source-error" hidden></p>
+            </div>
+
+            <div class="source-block" data-source="openverse">
+              <label class="source-toggle">
+                <input class="source-enabled" type="checkbox" checked />
+                <span class="source-name">Openverse</span>
+              </label>
+              <label class="source-count-field">
+                <span class="source-count-label">Nombre</span>
+                <input class="source-count" type="number" min="1" value="10" />
+              </label>
+              <span class="source-progress" data-state="idle">—</span>
+              <p class="source-error" hidden></p>
+            </div>
+          </div>
+
+          <div class="download-bar">
+            <button class="btn-primary" id="downloadBtn" type="button">Télécharger</button>
+            <span class="download-status" id="downloadStatus"></span>
+          </div>
         </section>
       </main>
 
