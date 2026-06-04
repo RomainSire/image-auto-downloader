@@ -1,6 +1,6 @@
 {
   "name": "image-auto-downloader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "App locale Electron pour télécharger des images b-roll libres de droit (Unsplash, Pexels, Pixabay, Openverse)",
   "main": "./out/main/index.js",
   "author": "romain",
