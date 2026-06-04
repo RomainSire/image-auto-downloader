@@ -2,11 +2,13 @@ import type {
   ApiKeyId,
   Config,
   DownloadRequest,
+  Lang,
   ProgressEvent,
   SourceError,
   SourceId,
   SourceResult
 } from '../../shared/types'
+import { applyTranslations, getLanguage, initLanguage, setLanguage, t } from './i18n'
 
 /** Les 3 sources nécessitant une clé (Openverse est anonyme). */
 const API_KEY_IDS: ApiKeyId[] = ['unsplash', 'pexels', 'pixabay']
@@ -22,6 +24,7 @@ function init(): void {
     showVersions()
     wireSettings()
     wireDownload()
+    wireLanguage()
     void loadConfig()
   })
 }
@@ -38,28 +41,38 @@ async function loadConfig(): Promise<void> {
   const status = document.getElementById('apiStatus')
   try {
     const config = await window.api.getConfig()
+    // Langue : appliquer AVANT le 1er rendu visible (DEV_PLAN §5.5).
+    initLanguage(config.language)
+    applyTranslations()
+    updateLangButtons()
+
     fillSettings(config)
     // Pré-remplit le dossier de destination du formulaire principal.
     input('destFolder').value = config.lastDestination
 
     const missing = API_KEY_IDS.filter((id) => !config.apiKeys[id].trim())
-    if (status) {
-      if (missing.length) {
-        status.textContent = `⚠ ${missing.length} clé(s) API manquante(s) : ${missing.join(', ')}`
-        status.className = 'status status-error'
-      } else {
-        status.textContent = '✓ Toutes les clés API sont configurées'
-        status.className = 'status status-ok'
-      }
-    }
+    setMainStatus(missing)
 
     // 1er lancement / clés manquantes → ouvrir le panneau Réglages.
     if (missing.length) openSettings(missing)
   } catch (error) {
     if (status) {
-      status.textContent = `✗ Impossible de lire la config : ${String(error)}`
+      status.textContent = t('status.configError', { error: String(error) })
       status.className = 'status status-error'
     }
+  }
+}
+
+/** Affiche le bandeau d'état des clés API (manquantes / toutes OK). */
+function setMainStatus(missing: ApiKeyId[]): void {
+  const status = document.getElementById('apiStatus')
+  if (!status) return
+  if (missing.length) {
+    status.textContent = t('status.missingKeys', { n: missing.length, keys: missing.join(', ') })
+    status.className = 'status status-error'
+  } else {
+    status.textContent = t('status.allKeysOk')
+    status.className = 'status status-ok'
   }
 }
 
@@ -95,7 +108,7 @@ function openSettings(missing?: ApiKeyId[]): void {
   const hint = byId('settingsHint')
   if (hint) {
     if (missing && missing.length) {
-      hint.textContent = `Renseignez les clés manquantes (${missing.join(', ')}) pour commencer.`
+      hint.textContent = t('settings.hintMissing', { keys: missing.join(', ') })
       hint.hidden = false
     } else {
       hint.hidden = true
@@ -121,30 +134,52 @@ async function saveSettings(): Promise<void> {
     lastDestination: input('dest').value.trim()
   }
 
-  setStatus('Enregistrement…')
+  setStatus(t('settings.saving'))
   try {
     await window.api.setConfig(partial)
-    setStatus('✓ Enregistré', 'ok')
+    setStatus(t('settings.saved'), 'ok')
     // Met à jour le bandeau d'état de la page principale.
     void refreshMainStatus()
   } catch (error) {
-    setStatus(`✗ Échec : ${String(error)}`, 'error')
+    setStatus(t('settings.saveError', { error: String(error) }), 'error')
   }
 }
 
 /** Recharge juste le bandeau d'état (sans rouvrir le panneau). */
 async function refreshMainStatus(): Promise<void> {
-  const status = document.getElementById('apiStatus')
-  if (!status) return
   const config = await window.api.getConfig()
-  const missing = API_KEY_IDS.filter((id) => !config.apiKeys[id].trim())
-  if (missing.length) {
-    status.textContent = `⚠ ${missing.length} clé(s) API manquante(s) : ${missing.join(', ')}`
-    status.className = 'status status-error'
-  } else {
-    status.textContent = '✓ Toutes les clés API sont configurées'
-    status.className = 'status status-ok'
-  }
+  setMainStatus(API_KEY_IDS.filter((id) => !config.apiKeys[id].trim()))
+}
+
+// ---- Sélecteur de langue ----
+
+function wireLanguage(): void {
+  byId('langGroup')
+    ?.querySelectorAll<HTMLButtonElement>('.lang-btn')
+    .forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang as Lang | undefined
+        if (lang) void changeLanguage(lang)
+      })
+    })
+}
+
+/** Bascule la langue : applique au DOM, persiste, et rafraîchit les états dynamiques. */
+async function changeLanguage(lang: Lang): Promise<void> {
+  await setLanguage(lang)
+  updateLangButtons()
+  // Les chaînes dynamiques déjà affichées (bandeau d'état) sont régénérées.
+  void refreshMainStatus()
+}
+
+/** Surligne le bouton de langue actif. */
+function updateLangButtons(): void {
+  const current = getLanguage()
+  byId('langGroup')
+    ?.querySelectorAll<HTMLButtonElement>('.lang-btn')
+    .forEach((btn) => {
+      btn.classList.toggle('is-active', btn.dataset.lang === current)
+    })
 }
 
 // ---- Téléchargement ----
@@ -195,13 +230,13 @@ async function handleDownload(): Promise<void> {
   }
 
   // Validation légère (la validation complète arrive en Phase 10).
-  if (!keyword) return setDownloadStatus('✗ Saisissez un mot-clé.', 'error')
-  if (!destFolder) return setDownloadStatus('✗ Indiquez un dossier de destination.', 'error')
+  if (!keyword) return setDownloadStatus(t('download.errNoKeyword'), 'error')
+  if (!destFolder) return setDownloadStatus(t('download.errNoDest'), 'error')
 
   const sources = readSources()
   const active = SOURCE_IDS.filter((id) => sources[id].enabled && sources[id].count > 0)
   if (active.length === 0) {
-    return setDownloadStatus('✗ Activez au moins une source (nombre ≥ 1).', 'error')
+    return setDownloadStatus(t('download.errNoSource'), 'error')
   }
 
   const req: DownloadRequest = { keyword, destFolder, subFolder, sources }
@@ -210,7 +245,7 @@ async function handleDownload(): Promise<void> {
   resetSourceDisplays(active)
   const btn = byId('downloadBtn') as HTMLButtonElement | null
   if (btn) btn.disabled = true
-  setDownloadStatus('Téléchargement en cours…')
+  setDownloadStatus(t('download.inProgress'))
 
   // Mémorise la destination pour le prochain lancement (best effort).
   void window.api.setConfig({ lastDestination: destFolder })
@@ -222,18 +257,12 @@ async function handleDownload(): Promise<void> {
     const total = summary.results.reduce((n, r) => n + r.downloaded, 0)
     const failed = summary.results.filter((r) => r.error)
     if (failed.length) {
-      setDownloadStatus(
-        `${total} image(s) téléchargée(s) — ${failed.length} source(s) en erreur.`,
-        'error'
-      )
+      setDownloadStatus(t('download.doneWithErrors', { total, failed: failed.length }), 'error')
     } else {
-      setDownloadStatus(
-        `✓ ${total} image(s) téléchargée(s) dans ${summary.subFolderAbsolutePath}`,
-        'ok'
-      )
+      setDownloadStatus(t('download.doneOk', { total, path: summary.subFolderAbsolutePath }), 'ok')
     }
   } catch (error) {
-    setDownloadStatus(`✗ Échec du téléchargement : ${String(error)}`, 'error')
+    setDownloadStatus(t('download.failed', { error: String(error) }), 'error')
   } finally {
     unsubscribe()
     if (btn) btn.disabled = false
@@ -283,7 +312,7 @@ function renderProgress(p: ProgressEvent): void {
   if (!progress) return
   switch (p.phase) {
     case 'searching':
-      progress.textContent = 'Recherche…'
+      progress.textContent = t('progress.searching')
       progress.dataset.state = 'pending'
       break
     case 'downloading':
@@ -319,9 +348,7 @@ function renderSummary(results: SourceResult[]): void {
 }
 
 function errorLabel(e: SourceError): string {
-  const prefix =
-    e.type === 'rate_limit' ? 'Limite atteinte' : e.type === 'fs' ? 'Erreur disque' : 'Erreur API'
-  return `${prefix} — ${e.message}`
+  return `${t(`error.${e.type}`)} — ${e.message}`
 }
 
 function setDownloadStatus(text: string, kind?: 'ok' | 'error'): void {

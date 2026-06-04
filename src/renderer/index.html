@@ -16,50 +16,60 @@
     <div id="app">
       <header class="app-header">
         <h1 class="app-title">Image Auto Downloader</h1>
-        <p class="app-subtitle">B-roll libre de droit — Unsplash · Pexels · Pixabay · Openverse</p>
-        <button class="btn-secondary header-settings" id="openSettings" type="button">
-          ⚙ Réglages
+        <p class="app-subtitle" data-i18n="app.subtitle">
+          Royalty-free b-roll — Unsplash · Pexels · Pixabay · Openverse
+        </p>
+        <button
+          class="btn-secondary header-settings"
+          id="openSettings"
+          type="button"
+          data-i18n="settings.button"
+        >
+          ⚙ Settings
         </button>
       </header>
 
       <main class="app-main">
         <section class="card">
-          <p class="status" id="apiStatus">Chargement de la configuration…</p>
+          <p class="status" id="apiStatus" data-i18n="status.loading">Loading configuration…</p>
 
           <div class="form-row">
             <label class="field">
-              <span class="field-label">Recherche (mot-clé)</span>
+              <span class="field-label" data-i18n="field.keyword">Search (keyword)</span>
               <input
                 class="field-input"
                 id="keyword"
                 type="text"
                 autocomplete="off"
                 spellcheck="false"
-                placeholder="ex. ramen, tokyo night, hands cooking…"
+                data-i18n-placeholder="field.keyword.ph"
+                placeholder="e.g. ramen, tokyo night, hands cooking…"
               />
             </label>
           </div>
 
           <div class="form-row form-row-split">
             <label class="field field-grow">
-              <span class="field-label">Dossier de destination</span>
+              <span class="field-label" data-i18n="field.destination">Destination folder</span>
               <input
                 class="field-input"
                 id="destFolder"
                 type="text"
                 autocomplete="off"
                 spellcheck="false"
+                data-i18n-placeholder="field.destination.ph"
                 placeholder="D:\BRoll"
               />
             </label>
             <label class="field field-grow">
-              <span class="field-label">Sous-dossier</span>
+              <span class="field-label" data-i18n="field.subfolder">Subfolder</span>
               <input
                 class="field-input"
                 id="subFolder"
                 type="text"
                 autocomplete="off"
                 spellcheck="false"
+                data-i18n-placeholder="field.subfolder.ph"
                 placeholder="2026-06-04-ramen"
               />
             </label>
@@ -72,7 +82,7 @@
                 <span class="source-name">Unsplash</span>
               </label>
               <label class="source-count-field">
-                <span class="source-count-label">Nombre</span>
+                <span class="source-count-label" data-i18n="source.count">Count</span>
                 <input class="source-count" type="number" min="1" value="10" />
               </label>
               <span class="source-progress" data-state="idle">—</span>
@@ -85,7 +95,7 @@
                 <span class="source-name">Pexels</span>
               </label>
               <label class="source-count-field">
-                <span class="source-count-label">Nombre</span>
+                <span class="source-count-label" data-i18n="source.count">Count</span>
                 <input class="source-count" type="number" min="1" value="10" />
               </label>
               <span class="source-progress" data-state="idle">—</span>
@@ -98,7 +108,7 @@
                 <span class="source-name">Pixabay</span>
               </label>
               <label class="source-count-field">
-                <span class="source-count-label">Nombre</span>
+                <span class="source-count-label" data-i18n="source.count">Count</span>
                 <input class="source-count" type="number" min="1" value="10" />
               </label>
               <span class="source-progress" data-state="idle">—</span>
@@ -111,7 +121,7 @@
                 <span class="source-name">Openverse</span>
               </label>
               <label class="source-count-field">
-                <span class="source-count-label">Nombre</span>
+                <span class="source-count-label" data-i18n="source.count">Count</span>
                 <input class="source-count" type="number" min="1" value="10" />
               </label>
               <span class="source-progress" data-state="idle">—</span>
@@ -120,7 +130,9 @@
           </div>
 
           <div class="download-bar">
-            <button class="btn-primary" id="downloadBtn" type="button">Télécharger</button>
+            <button class="btn-primary" id="downloadBtn" type="button" data-i18n="download.button">
+              Download
+            </button>
             <span class="download-status" id="downloadStatus"></span>
           </div>
         </section>
@@ -138,36 +150,51 @@
     <!-- Panneau Réglages (overlay). Ouvert au 1er lancement si des clés manquent. -->
     <div class="overlay" id="settings" hidden>
       <div class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-        <h2 class="settings-title" id="settingsTitle">Réglages</h2>
+        <h2 class="settings-title" id="settingsTitle" data-i18n="settings.title">Settings</h2>
         <p class="settings-hint" id="settingsHint" hidden></p>
 
         <form class="settings-form" id="settingsForm">
           <label class="field">
-            <span class="field-label">Clé API Unsplash <em>(Access Key)</em></span>
-            <input class="field-input" id="key-unsplash" type="text" autocomplete="off" spellcheck="false" placeholder="Client-ID…" />
+            <span class="field-label" data-i18n="settings.key.unsplash">Unsplash API key (Access Key)</span>
+            <input class="field-input" id="key-unsplash" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="settings.key.ph.clientId" placeholder="Client-ID…" />
           </label>
 
           <label class="field">
-            <span class="field-label">Clé API Pexels</span>
-            <input class="field-input" id="key-pexels" type="text" autocomplete="off" spellcheck="false" placeholder="API Key…" />
+            <span class="field-label" data-i18n="settings.key.pexels">Pexels API key</span>
+            <input class="field-input" id="key-pexels" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="settings.key.ph.apikey" placeholder="API Key…" />
           </label>
 
           <label class="field">
-            <span class="field-label">Clé API Pixabay</span>
-            <input class="field-input" id="key-pixabay" type="text" autocomplete="off" spellcheck="false" placeholder="API Key…" />
+            <span class="field-label" data-i18n="settings.key.pixabay">Pixabay API key</span>
+            <input class="field-input" id="key-pixabay" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="settings.key.ph.apikey" placeholder="API Key…" />
           </label>
 
-          <p class="field-note">Openverse ne nécessite aucune clé (source anonyme).</p>
+          <p class="field-note" data-i18n="settings.openverseNote">
+            Openverse requires no key (anonymous source).
+          </p>
 
           <label class="field">
-            <span class="field-label">Dossier de destination par défaut</span>
-            <input class="field-input" id="dest" type="text" autocomplete="off" spellcheck="false" placeholder="D:\BRoll" />
+            <span class="field-label" data-i18n="settings.defaultDest">Default destination folder</span>
+            <input class="field-input" id="dest" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="field.destination.ph" placeholder="D:\BRoll" />
           </label>
+
+          <div class="field">
+            <span class="field-label" data-i18n="settings.language">Language</span>
+            <div class="lang-group" id="langGroup" role="group">
+              <button class="lang-btn" type="button" data-lang="en">EN</button>
+              <button class="lang-btn" type="button" data-lang="fr">FR</button>
+              <button class="lang-btn" type="button" data-lang="ja">日本語</button>
+            </div>
+          </div>
 
           <div class="settings-actions">
             <span class="settings-status" id="settingsStatus"></span>
-            <button class="btn-secondary" id="closeSettings" type="button">Fermer</button>
-            <button class="btn-primary" id="saveSettings" type="submit">Enregistrer</button>
+            <button class="btn-secondary" id="closeSettings" type="button" data-i18n="settings.close">
+              Close
+            </button>
+            <button class="btn-primary" id="saveSettings" type="submit" data-i18n="settings.save">
+              Save
+            </button>
           </div>
         </form>
       </div>
