@@ -14,8 +14,15 @@ body {
 
 /* ---- Header ---- */
 .app-header {
+  position: relative;
   text-align: center;
   padding-bottom: 24px;
+}
+
+.header-settings {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .app-title {
@@ -113,4 +120,145 @@ body {
   .versions {
     display: none;
   }
+}
+
+/* ---- Boutons ---- */
+.btn-primary,
+.btn-secondary {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.btn-primary {
+  background-color: #4f7cff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #3f6aff;
+}
+
+.btn-secondary {
+  background-color: var(--color-background-mute);
+  color: var(--ev-c-text-1);
+  border-color: var(--ev-c-gray-3);
+}
+
+.btn-secondary:hover {
+  border-color: var(--ev-c-gray-1);
+}
+
+/* ---- Overlay Réglages ---- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 100;
+}
+
+.overlay[hidden] {
+  display: none;
+}
+
+.settings-panel {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--color-background-soft);
+  border: 1px solid var(--ev-c-gray-3);
+  border-radius: 14px;
+  padding: 26px 24px;
+}
+
+.settings-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ev-c-text-1);
+}
+
+.settings-hint {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #fbbf24;
+}
+
+.settings-form {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ev-c-text-2);
+}
+
+.field-label em {
+  font-weight: 400;
+  font-style: normal;
+  color: var(--ev-c-text-3);
+}
+
+.field-input {
+  width: 100%;
+  padding: 9px 11px;
+  font-size: 14px;
+  color: var(--ev-c-text-1);
+  background: var(--color-background-mute);
+  border: 1px solid var(--ev-c-gray-3);
+  border-radius: 8px;
+  outline: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.field-input:focus {
+  border-color: #4f7cff;
+}
+
+.field-note {
+  font-size: 12px;
+  color: var(--ev-c-text-3);
+  margin-top: -4px;
+}
+
+.settings-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.settings-status {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ev-c-text-3);
+}
+
+.settings-status-ok {
+  color: #4ade80;
+}
+
+.settings-status-error {
+  color: #f87171;
 }

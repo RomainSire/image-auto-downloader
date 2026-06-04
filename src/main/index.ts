@@ -1,6 +1,7 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { registerIpcHandlers } from './ipc'
 import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
@@ -56,9 +57,8 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC squelette (Phase 1) — round-trip de vérification, remplacé par les
-  // vrais handlers (config, download, folder…) dans les phases suivantes.
-  ipcMain.handle('ping', () => 'pong')
+  // Handlers IPC (Phase 2 : config ; étendus en Phase 5).
+  registerIpcHandlers()
 
   createWindow()
 

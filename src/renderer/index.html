@@ -17,15 +17,19 @@
       <header class="app-header">
         <h1 class="app-title">Image Auto Downloader</h1>
         <p class="app-subtitle">B-roll libre de droit — Unsplash · Pexels · Pixabay · Openverse</p>
+        <button class="btn-secondary header-settings" id="openSettings" type="button">
+          ⚙ Réglages
+        </button>
       </header>
 
       <main class="app-main">
         <section class="card">
           <h2 class="card-title">Coquille prête</h2>
           <p class="card-text">
-            L'interface de téléchargement sera construite dans les prochaines phases.
+            L'interface de téléchargement sera construite dans les prochaines phases. Configurez vos
+            clés API dans les Réglages.
           </p>
-          <p class="status" id="apiStatus">Vérification de l'API…</p>
+          <p class="status" id="apiStatus">Chargement de la configuration…</p>
         </section>
       </main>
 
@@ -36,6 +40,44 @@
           <li class="node-version"></li>
         </ul>
       </footer>
+    </div>
+
+    <!-- Panneau Réglages (overlay). Ouvert au 1er lancement si des clés manquent. -->
+    <div class="overlay" id="settings" hidden>
+      <div class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <h2 class="settings-title" id="settingsTitle">Réglages</h2>
+        <p class="settings-hint" id="settingsHint" hidden></p>
+
+        <form class="settings-form" id="settingsForm">
+          <label class="field">
+            <span class="field-label">Clé API Unsplash <em>(Access Key)</em></span>
+            <input class="field-input" id="key-unsplash" type="text" autocomplete="off" spellcheck="false" placeholder="Client-ID…" />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Clé API Pexels</span>
+            <input class="field-input" id="key-pexels" type="text" autocomplete="off" spellcheck="false" placeholder="API Key…" />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Clé API Pixabay</span>
+            <input class="field-input" id="key-pixabay" type="text" autocomplete="off" spellcheck="false" placeholder="API Key…" />
+          </label>
+
+          <p class="field-note">Openverse ne nécessite aucune clé (source anonyme).</p>
+
+          <label class="field">
+            <span class="field-label">Dossier de destination par défaut</span>
+            <input class="field-input" id="dest" type="text" autocomplete="off" spellcheck="false" placeholder="D:\BRoll" />
+          </label>
+
+          <div class="settings-actions">
+            <span class="settings-status" id="settingsStatus"></span>
+            <button class="btn-secondary" id="closeSettings" type="button">Fermer</button>
+            <button class="btn-primary" id="saveSettings" type="submit">Enregistrer</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script type="module" src="./src/renderer.ts"></script>

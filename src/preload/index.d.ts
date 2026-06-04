@@ -1,12 +1,14 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
+import type { Config } from '../shared/types'
 
 /**
  * API exposée au renderer via contextBridge (`window.api`).
- * Phase 1 : squelette. Étendue dans les phases suivantes avec
- * selectFolder / getConfig / setConfig / download / onProgress / openFolder.
+ * Phase 2 : config. Étendue dans les phases suivantes avec
+ * selectFolder / download / onProgress / openFolder.
  */
 export interface Api {
-  ping: () => Promise<string>
+  getConfig: () => Promise<Config>
+  setConfig: (partial: Partial<Config>) => Promise<Config>
 }
 
 declare global {
