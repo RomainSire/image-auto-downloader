@@ -26,3 +26,47 @@ export interface Config {
   /** "en" | "fr" | "ja" — défaut "en". */
   language: Lang
 }
+
+// ---------------------------------------------------------------------------
+// Contrats de téléchargement (DEV_PLAN §5.3), partagés main ⇄ preload ⇄ renderer.
+// ---------------------------------------------------------------------------
+
+/** Les 4 sources. Openverse est anonyme (pas dans `ApiKeys`). */
+export type SourceId = 'unsplash' | 'pexels' | 'pixabay' | 'openverse'
+
+export interface DownloadRequest {
+  keyword: string
+  /** Chemin Windows réel, ex. "D:\\BRoll". */
+  destFolder: string
+  /** Sous-dossier éditable, ex. "2026-06-04-ramen". */
+  subFolder: string
+  sources: Record<SourceId, { enabled: boolean; count: number }>
+}
+
+export interface ProgressEvent {
+  source: SourceId
+  done: number
+  total: number
+  phase: 'searching' | 'downloading' | 'done' | 'error'
+}
+
+export type SourceError =
+  /** HTTP 429 / quota épuisé (Openverse : aussi 401, Unsplash : aussi 403). */
+  | { type: 'rate_limit'; message: string }
+  /** Autre erreur API : clé invalide, 4xx/5xx, réponse inattendue, réseau. */
+  | { type: 'api'; message: string }
+  /** Échec d'écriture disque. */
+  | { type: 'fs'; message: string }
+
+export interface SourceResult {
+  source: SourceId
+  downloaded: number
+  requested: number
+  error?: SourceError
+}
+
+export interface DownloadSummary {
+  /** Pour activer le bouton « Ouvrir le dossier ». */
+  subFolderAbsolutePath: string
+  results: SourceResult[]
+}
