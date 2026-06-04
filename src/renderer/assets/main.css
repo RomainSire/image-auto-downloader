@@ -81,6 +81,22 @@ body {
   flex: 1;
 }
 
+/* Champ destination : input + bouton « Parcourir » côte à côte. */
+.field-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.field-input-row .field-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-browse {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .sources {
   margin-top: 22px;
   display: flex;
@@ -194,7 +210,8 @@ body {
   color: #f87171;
 }
 
-.btn-primary:disabled {
+.btn-primary:disabled,
+.btn-secondary:disabled {
   opacity: 0.55;
   cursor: default;
 }

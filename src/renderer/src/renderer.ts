@@ -19,6 +19,9 @@ const SOURCE_IDS: SourceId[] = ['unsplash', 'pexels', 'pixabay', 'openverse']
 /** L'utilisateur a-t-il édité le sous-dossier à la main ? (stoppe l'auto-remplissage) */
 let subFolderEdited = false
 
+/** Chemin du dernier sous-dossier téléchargé avec succès (bouton « Ouvrir le dossier »). */
+let lastDownloadPath: string | null = null
+
 function init(): void {
   window.addEventListener('DOMContentLoaded', () => {
     showVersions()
@@ -195,6 +198,22 @@ function wireDownload(): void {
   })
 
   byId('downloadBtn')?.addEventListener('click', () => void handleDownload())
+  byId('browseDest')?.addEventListener('click', () => void handleBrowse())
+  byId('openFolderBtn')?.addEventListener('click', () => void handleOpenFolder())
+}
+
+/** Picker natif : remplit le champ destination (ignoré si l'utilisateur annule). */
+async function handleBrowse(): Promise<void> {
+  const folder = await window.api.selectFolder()
+  if (folder) input('destFolder').value = folder
+}
+
+/** Ouvre dans l'Explorateur le sous-dossier du dernier téléchargement réussi. */
+async function handleOpenFolder(): Promise<void> {
+  if (!lastDownloadPath) return
+  const error = await window.api.openFolder(lastDownloadPath)
+  // shell.openPath renvoie une chaîne non vide en cas d'échec.
+  if (error) setDownloadStatus(t('download.openFolderError', { error }), 'error')
 }
 
 /** Sous-dossier proposé : `YYYY-MM-DD-{slug(keyword)}` (vide si pas de mot-clé). */
@@ -245,6 +264,8 @@ async function handleDownload(): Promise<void> {
   resetSourceDisplays(active)
   const btn = byId('downloadBtn') as HTMLButtonElement | null
   if (btn) btn.disabled = true
+  // Le chemin précédent n'est plus pertinent tant que ce job n'a rien produit.
+  setOpenFolderEnabled(false)
   setDownloadStatus(t('download.inProgress'))
 
   // Mémorise la destination pour le prochain lancement (best effort).
@@ -256,6 +277,11 @@ async function handleDownload(): Promise<void> {
     renderSummary(summary.results)
     const total = summary.results.reduce((n, r) => n + r.downloaded, 0)
     const failed = summary.results.filter((r) => r.error)
+    // Active « Ouvrir le dossier » dès qu'au moins une image a été écrite.
+    if (total > 0) {
+      lastDownloadPath = summary.subFolderAbsolutePath
+      setOpenFolderEnabled(true)
+    }
     if (failed.length) {
       setDownloadStatus(t('download.doneWithErrors', { total, failed: failed.length }), 'error')
     } else {
@@ -349,6 +375,11 @@ function renderSummary(results: SourceResult[]): void {
 
 function errorLabel(e: SourceError): string {
   return `${t(`error.${e.type}`)} — ${e.message}`
+}
+
+function setOpenFolderEnabled(enabled: boolean): void {
+  const btn = byId('openFolderBtn') as HTMLButtonElement | null
+  if (btn) btn.disabled = !enabled
 }
 
 function setDownloadStatus(text: string, kind?: 'ok' | 'error'): void {

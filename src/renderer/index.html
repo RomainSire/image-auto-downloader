@@ -49,18 +49,28 @@
           </div>
 
           <div class="form-row form-row-split">
-            <label class="field field-grow">
+            <div class="field field-grow">
               <span class="field-label" data-i18n="field.destination">Destination folder</span>
-              <input
-                class="field-input"
-                id="destFolder"
-                type="text"
-                autocomplete="off"
-                spellcheck="false"
-                data-i18n-placeholder="field.destination.ph"
-                placeholder="D:\BRoll"
-              />
-            </label>
+              <div class="field-input-row">
+                <input
+                  class="field-input"
+                  id="destFolder"
+                  type="text"
+                  autocomplete="off"
+                  spellcheck="false"
+                  data-i18n-placeholder="field.destination.ph"
+                  placeholder="D:\BRoll"
+                />
+                <button
+                  class="btn-secondary btn-browse"
+                  id="browseDest"
+                  type="button"
+                  data-i18n="field.browse"
+                >
+                  Browse…
+                </button>
+              </div>
+            </div>
             <label class="field field-grow">
               <span class="field-label" data-i18n="field.subfolder">Subfolder</span>
               <input
@@ -132,6 +142,15 @@
           <div class="download-bar">
             <button class="btn-primary" id="downloadBtn" type="button" data-i18n="download.button">
               Download
+            </button>
+            <button
+              class="btn-secondary"
+              id="openFolderBtn"
+              type="button"
+              disabled
+              data-i18n="download.openFolder"
+            >
+              Open folder
             </button>
             <span class="download-status" id="downloadStatus"></span>
           </div>
