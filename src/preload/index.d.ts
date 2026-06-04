@@ -1,14 +1,19 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import type { Config } from '../shared/types'
+import type { Config, DownloadRequest, DownloadSummary, ProgressEvent } from '../shared/types'
 
 /**
  * API exposée au renderer via contextBridge (`window.api`).
- * Phase 2 : config. Étendue dans les phases suivantes avec
- * selectFolder / download / onProgress / openFolder.
+ * Config (Phase 2) + selectFolder / download / onProgress / openFolder (Phase 5).
  */
 export interface Api {
   getConfig: () => Promise<Config>
   setConfig: (partial: Partial<Config>) => Promise<Config>
+  /** Dialog natif openDirectory → chemin absolu, ou null si annulé. */
+  selectFolder: () => Promise<string | null>
+  download: (req: DownloadRequest) => Promise<DownloadSummary>
+  openFolder: (absolutePath: string) => Promise<string>
+  /** S'abonne à la progression ; renvoie une fonction de désabonnement. */
+  onProgress: (cb: (p: ProgressEvent) => void) => () => void
 }
 
 declare global {

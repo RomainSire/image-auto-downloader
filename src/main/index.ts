@@ -57,7 +57,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // Handlers IPC (Phase 2 : config ; étendus en Phase 5).
+  // Handlers IPC : config + select-folder / download / open-folder.
   registerIpcHandlers()
 
   createWindow()
