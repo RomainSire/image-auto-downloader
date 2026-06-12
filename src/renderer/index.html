@@ -33,6 +33,22 @@
         <section class="card">
           <p class="status" id="apiStatus" data-i18n="status.loading">Loading configuration…</p>
 
+          <div class="media-toggle-row">
+            <div class="media-group" id="mediaToggle" role="group" aria-label="Media type">
+              <button
+                class="media-btn is-active"
+                type="button"
+                data-media="photo"
+                data-i18n="media.photos"
+              >
+                Photos
+              </button>
+              <button class="media-btn" type="button" data-media="video" data-i18n="media.videos">
+                Videos
+              </button>
+            </div>
+          </div>
+
           <div class="form-row">
             <label class="field">
               <span class="field-label" data-i18n="field.keyword">Search (keyword)</span>
@@ -90,6 +106,7 @@
               <label class="source-toggle">
                 <input class="source-enabled" type="checkbox" checked />
                 <span class="source-name">Unsplash</span>
+                <span class="source-tag" data-i18n="source.noVideo" hidden>No video</span>
               </label>
               <label class="source-count-field">
                 <span class="source-count-label" data-i18n="source.count">Count</span>
@@ -103,6 +120,7 @@
               <label class="source-toggle">
                 <input class="source-enabled" type="checkbox" checked />
                 <span class="source-name">Pexels</span>
+                <span class="source-tag" data-i18n="source.noVideo" hidden>No video</span>
               </label>
               <label class="source-count-field">
                 <span class="source-count-label" data-i18n="source.count">Count</span>
@@ -116,6 +134,7 @@
               <label class="source-toggle">
                 <input class="source-enabled" type="checkbox" checked />
                 <span class="source-name">Pixabay</span>
+                <span class="source-tag" data-i18n="source.noVideo" hidden>No video</span>
               </label>
               <label class="source-count-field">
                 <span class="source-count-label" data-i18n="source.count">Count</span>
@@ -129,6 +148,7 @@
               <label class="source-toggle">
                 <input class="source-enabled" type="checkbox" checked />
                 <span class="source-name">Openverse</span>
+                <span class="source-tag" data-i18n="source.noVideo" hidden>No video</span>
               </label>
               <label class="source-count-field">
                 <span class="source-count-label" data-i18n="source.count">Count</span>
@@ -174,18 +194,44 @@
 
         <form class="settings-form" id="settingsForm">
           <label class="field">
-            <span class="field-label" data-i18n="settings.key.unsplash">Unsplash API key (Access Key)</span>
-            <input class="field-input" id="key-unsplash" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="settings.key.ph.clientId" placeholder="Client-ID…" />
+            <span class="field-label" data-i18n="settings.key.unsplash"
+              >Unsplash API key (Access Key)</span
+            >
+            <input
+              class="field-input"
+              id="key-unsplash"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              data-i18n-placeholder="settings.key.ph.clientId"
+              placeholder="Client-ID…"
+            />
           </label>
 
           <label class="field">
             <span class="field-label" data-i18n="settings.key.pexels">Pexels API key</span>
-            <input class="field-input" id="key-pexels" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="settings.key.ph.apikey" placeholder="API Key…" />
+            <input
+              class="field-input"
+              id="key-pexels"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              data-i18n-placeholder="settings.key.ph.apikey"
+              placeholder="API Key…"
+            />
           </label>
 
           <label class="field">
             <span class="field-label" data-i18n="settings.key.pixabay">Pixabay API key</span>
-            <input class="field-input" id="key-pixabay" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="settings.key.ph.apikey" placeholder="API Key…" />
+            <input
+              class="field-input"
+              id="key-pixabay"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              data-i18n-placeholder="settings.key.ph.apikey"
+              placeholder="API Key…"
+            />
           </label>
 
           <p class="field-note" data-i18n="settings.openverseNote">
@@ -203,7 +249,12 @@
 
           <div class="settings-actions">
             <span class="settings-status" id="settingsStatus"></span>
-            <button class="btn-secondary" id="closeSettings" type="button" data-i18n="settings.close">
+            <button
+              class="btn-secondary"
+              id="closeSettings"
+              type="button"
+              data-i18n="settings.close"
+            >
               Close
             </button>
             <button class="btn-primary" id="saveSettings" type="submit" data-i18n="settings.save">

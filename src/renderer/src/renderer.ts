@@ -3,11 +3,13 @@ import type {
   Config,
   DownloadRequest,
   Lang,
+  MediaType,
   ProgressEvent,
   SourceError,
   SourceId,
   SourceResult
 } from '../../shared/types'
+import { supportsVideo } from '../../shared/media'
 import { applyTranslations, getLanguage, initLanguage, setLanguage, t } from './i18n'
 
 /** Les 3 sources nécessitant une clé (Openverse est anonyme). */
@@ -19,6 +21,14 @@ const SOURCE_IDS: SourceId[] = ['unsplash', 'pexels', 'pixabay', 'openverse']
 /** L'utilisateur a-t-il édité le sous-dossier à la main ? (stoppe l'auto-remplissage) */
 let subFolderEdited = false
 
+/** Type de média courant (switch Photos/Vidéos). Défaut : photo. */
+let mediaType: MediaType = 'photo'
+
+/** Une source est-elle disponible pour le type de média courant ? */
+function isSourceAvailable(id: SourceId): boolean {
+  return mediaType !== 'video' || supportsVideo(id)
+}
+
 /** Chemin du dernier sous-dossier téléchargé avec succès (bouton « Ouvrir le dossier »). */
 let lastDownloadPath: string | null = null
 
@@ -28,6 +38,7 @@ function init(): void {
     wireSettings()
     wireDownload()
     wireLanguage()
+    wireMedia()
     void loadConfig()
   })
 }
@@ -187,6 +198,48 @@ function updateLangButtons(): void {
     })
 }
 
+// ---- Switch Photos / Vidéos ----
+
+function wireMedia(): void {
+  byId('mediaToggle')
+    ?.querySelectorAll<HTMLButtonElement>('.media-btn')
+    .forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = btn.dataset.media as MediaType | undefined
+        if (next && next !== mediaType) setMediaType(next)
+      })
+    })
+  // État initial (photo) : tout est disponible.
+  applySourceAvailability()
+}
+
+/** Bascule le type de média : surligne le bouton + grise les sources non supportées. */
+function setMediaType(next: MediaType): void {
+  mediaType = next
+  byId('mediaToggle')
+    ?.querySelectorAll<HTMLButtonElement>('.media-btn')
+    .forEach((btn) => btn.classList.toggle('is-active', btn.dataset.media === mediaType))
+  applySourceAvailability()
+}
+
+/**
+ * Grise (et désactive) les sources sans API pour le type courant : en mode vidéo,
+ * Unsplash et Openverse deviennent indisponibles ; on rétablit tout en mode photo.
+ */
+function applySourceAvailability(): void {
+  for (const id of SOURCE_IDS) {
+    const block = sourceBlock(id)
+    const available = isSourceAvailable(id)
+    block.classList.toggle('is-unavailable', !available)
+    const checkbox = block.querySelector<HTMLInputElement>('.source-enabled')
+    const count = block.querySelector<HTMLInputElement>('.source-count')
+    const tag = block.querySelector<HTMLElement>('.source-tag')
+    if (checkbox) checkbox.disabled = !available
+    if (count) count.disabled = !available
+    if (tag) tag.hidden = available
+  }
+}
+
 // ---- Téléchargement ----
 
 function wireDownload(): void {
@@ -265,7 +318,7 @@ async function handleDownload(): Promise<void> {
     return setDownloadStatus(t('download.errDestMissing', { path: destFolder }), 'error')
   }
 
-  const req: DownloadRequest = { keyword, destFolder, subFolder, sources }
+  const req: DownloadRequest = { keyword, destFolder, subFolder, mediaType, sources }
 
   // Réinitialise l'affichage des blocs et verrouille le bouton.
   resetSourceDisplays(active)
@@ -310,10 +363,11 @@ function readSources(): DownloadRequest['sources'] {
   const out = {} as DownloadRequest['sources']
   for (const id of SOURCE_IDS) {
     const block = sourceBlock(id)
-    const enabled = block.querySelector<HTMLInputElement>('.source-enabled')?.checked ?? false
+    const checked = block.querySelector<HTMLInputElement>('.source-enabled')?.checked ?? false
     const raw = block.querySelector<HTMLInputElement>('.source-count')?.value ?? '0'
     const count = Math.max(0, Math.trunc(Number(raw) || 0))
-    out[id] = { enabled, count }
+    // Une source indisponible pour le mode courant n'est jamais envoyée.
+    out[id] = { enabled: checked && isSourceAvailable(id), count }
   }
   return out
 }

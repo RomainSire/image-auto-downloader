@@ -34,12 +34,17 @@ export interface Config {
 /** Les 4 sources. Openverse est anonyme (pas dans `ApiKeys`). */
 export type SourceId = 'unsplash' | 'pexels' | 'pixabay' | 'openverse'
 
+/** Type de média téléchargé. Le switch de l'UI bascule entre les deux. */
+export type MediaType = 'photo' | 'video'
+
 export interface DownloadRequest {
   keyword: string
   /** Chemin Windows réel, ex. "D:\\BRoll". */
   destFolder: string
   /** Sous-dossier éditable, ex. "2026-06-04-ramen". */
   subFolder: string
+  /** Photos ou vidéos (défaut UI : 'photo'). En vidéo, seules Pexels/Pixabay répondent. */
+  mediaType: MediaType
   sources: Record<SourceId, { enabled: boolean; count: number }>
 }
 

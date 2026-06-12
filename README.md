@@ -1,8 +1,10 @@
 # Image Auto Downloader
 
-Application **desktop locale** (Windows) qui télécharge en masse des **images libres de droit** pour alimenter un workflow de montage vidéo **b-roll**.
+Application **desktop locale** (Windows) qui télécharge en masse des **images et vidéos libres de droit** pour alimenter un workflow de montage vidéo **b-roll**.
 
-À partir d'un mot-clé (ex. « ramen », « tokyo night », « hands cooking »), l'app interroge plusieurs banques d'images gratuites, télécharge les résultats dans un sous-dossier dédié, et les range dans un dossier central surveillé par [Immich](https://immich.app/) (recherche IA) et lié comme _bin_ dans Adobe Premiere Pro.
+À partir d'un mot-clé (ex. « ramen », « tokyo night », « hands cooking »), l'app interroge plusieurs banques gratuites, télécharge les résultats dans un sous-dossier dédié, et les range dans un dossier central surveillé par [Immich](https://immich.app/) (recherche IA) et lié comme _bin_ dans Adobe Premiere Pro.
+
+Un **switch Photos / Vidéos** en haut de l'app bascule le type de média téléchargé. En mode Vidéos, les sources qui n'ont pas d'API vidéo (Unsplash, Openverse) sont automatiquement grisées.
 
 > App **perso, mono-utilisateur, sans déploiement ni authentification**. Pensée pour le PC de montage (Windows).
 
@@ -16,8 +18,10 @@ Cette app est **le premier maillon de la chaîne** : elle télécharge des image
 
 ## Fonctionnalités
 
-- Recherche par **mot-clé** sur 4 banques d'images en parallèle.
-- Choix du **nombre d'images par source** et activation/désactivation source par source.
+- **Photos ou vidéos** : un switch en haut bascule le type de média téléchargé.
+- Recherche par **mot-clé** sur 4 banques en parallèle (2 pour la vidéo : Pexels, Pixabay).
+- Choix du **nombre de fichiers par source** et activation/désactivation source par source.
+- En mode vidéo, sélection automatique de la résolution **~1080p** (plus petit côté).
 - Rangement automatique : `{destination}/{AAAA-MM-JJ-motclé}/`, fichiers préfixés par source (`unsplash_<id>.jpg`, …).
 - **Picker de dossier natif** + bouton « Ouvrir le dossier » (Explorateur Windows).
 - **Suivi de progression** en temps réel et gestion d'erreurs par source (quota, API, disque).
@@ -26,12 +30,14 @@ Cette app est **le premier maillon de la chaîne** : elle télécharge des image
 
 ## Sources d'images
 
-| Source                                      | Clé API requise   | Licence / filtre                                                     |
-| ------------------------------------------- | ----------------- | -------------------------------------------------------------------- |
-| [Unsplash](https://unsplash.com/developers) | Oui (Access Key)  | Libre, sans attribution obligatoire                                  |
-| [Pexels](https://www.pexels.com/api/)       | Oui               | Libre, sans attribution obligatoire                                  |
-| [Pixabay](https://pixabay.com/api/docs/)    | Oui               | Libre, sans attribution obligatoire                                  |
-| [Openverse](https://api.openverse.org/)     | **Non** (anonyme) | Filtre `license=cc0,pdm` → CC0 + domaine public, usage commercial OK |
+| Source                                      | Clé API requise   | Photo | Vidéo | Licence / filtre                                                     |
+| ------------------------------------------- | ----------------- | :---: | :---: | -------------------------------------------------------------------- |
+| [Unsplash](https://unsplash.com/developers) | Oui (Access Key)  | ✅ | ❌ | Libre, sans attribution obligatoire                                  |
+| [Pexels](https://www.pexels.com/api/)       | Oui               | ✅ | ✅ | Libre, sans attribution obligatoire                                  |
+| [Pixabay](https://pixabay.com/api/docs/)    | Oui               | ✅ | ✅ | Libre, sans attribution obligatoire                                  |
+| [Openverse](https://api.openverse.org/)     | **Non** (anonyme) | ✅ | ❌ | Filtre `license=cc0,pdm` → CC0 + domaine public, usage commercial OK |
+
+> **Vidéos** : seules **Pexels** (`/videos/search`) et **Pixabay** (`/api/videos/`) exposent une API vidéo. Unsplash et Openverse n'en ont pas → grisées en mode Vidéos. Les fichiers sont nommés `pexels_<id>.mp4`, `pixabay_<id>.mp4` et rangés dans le **même** sous-dossier que les photos.
 
 > Les clés API se renseignent **dans l'app** (panneau Réglages), pas dans un fichier `.env`. Elles sont stockées localement dans `config.json` (voir ci-dessous).
 
