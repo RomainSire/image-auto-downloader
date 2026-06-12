@@ -1,5 +1,5 @@
-appId: com.romain.image-auto-downloader
-productName: Image Auto Downloader
+appId: com.romain.b-roll-downloader
+productName: B-Roll Downloader
 directories:
   buildResources: build
 files:
@@ -13,7 +13,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: image-auto-downloader
+  executableName: b-roll-downloader
   icon: build/icon.ico
   target:
     - nsis

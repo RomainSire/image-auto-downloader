@@ -1,4 +1,4 @@
-# Image Auto Downloader
+# B-Roll Downloader
 
 Application **desktop locale** (Windows) qui télécharge en masse des **images et vidéos libres de droit** pour alimenter un workflow de montage vidéo **b-roll**.
 
@@ -66,8 +66,8 @@ Au premier lancement, si des clés manquent, l'app ouvre automatiquement le **pa
 
 Les réglages sont persistés dans `config.json`, situé dans le dossier `userData` d'Electron :
 
-- **Windows** : `%APPDATA%\image-auto-downloader\config.json`
-- **Linux (dev)** : `~/.config/image-auto-downloader/config.json`
+- **Windows** : `%APPDATA%\b-roll-downloader\config.json`
+- **Linux (dev)** : `~/.config/b-roll-downloader/config.json`
 
 ```jsonc
 {
@@ -116,7 +116,7 @@ Un déclenchement manuel (_workflow_dispatch_) produit les mêmes binaires en _a
 ## Structure du projet
 
 ```
-image-auto-downloader/
+b-roll-downloader/
 ├── package.json
 ├── electron.vite.config.ts  # 3 cibles : main / preload / renderer
 ├── electron-builder.yml     # packaging Windows

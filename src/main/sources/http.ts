@@ -5,7 +5,7 @@ import { SourceException, type ImageHit } from './types'
  * vers `SourceError`, et pagination générique jusqu'à `count`.
  */
 
-const USER_AGENT = 'image-auto-downloader/0.1 (+https://github.com/local)'
+const USER_AGENT = 'b-roll-downloader/1.1 (+https://github.com/RomainSire/b-roll-downloader)'
 
 /** Délai max d'une requête de recherche (ms) avant abandon. */
 const SEARCH_TIMEOUT_MS = 15_000
