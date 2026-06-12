@@ -13,7 +13,7 @@ const SEARCH_TIMEOUT_MS = 15_000
 /**
  * GET JSON avec mapping d'erreurs HTTP → `SourceException`.
  * `rateLimitStatuses` : statuts à considérer comme `rate_limit` pour cette
- * source (toujours 429 ; Openverse ajoute 401, Unsplash 403).
+ * source (toujours 429 ; Unsplash ajoute 403).
  */
 export async function fetchJson<T>(
   url: string,

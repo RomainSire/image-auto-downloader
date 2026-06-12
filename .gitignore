@@ -5,4 +5,5 @@ out
 .eslintcache
 *.log*
 DEV_PLAN.md
+DEV_PLAN_VIDEO.md
 .claude

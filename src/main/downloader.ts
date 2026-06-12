@@ -37,9 +37,9 @@ const VIDEO_DOWNLOAD_TIMEOUT_MS = 120_000
 
 type Outcome = 'downloaded' | 'skipped' | 'failed'
 
-/** Clé API d'une source (Openverse est anonyme → chaîne vide). */
+/** Clé API d'une source. */
 function keyFor(id: SourceId, keys: ApiKeys): string {
-  return id === 'openverse' ? '' : keys[id]
+  return keys[id]
 }
 
 function toSourceError(e: unknown): SourceError {

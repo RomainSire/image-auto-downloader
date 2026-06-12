@@ -8,7 +8,7 @@
 
 export type Lang = 'en' | 'fr' | 'ja'
 
-/** Sources nécessitant une clé API (Openverse est anonyme → absente). */
+/** Sources, chacune nécessitant une clé API. */
 export interface ApiKeys {
   unsplash: string
   pexels: string
@@ -31,8 +31,8 @@ export interface Config {
 // Contrats de téléchargement (DEV_PLAN §5.3), partagés main ⇄ preload ⇄ renderer.
 // ---------------------------------------------------------------------------
 
-/** Les 4 sources. Openverse est anonyme (pas dans `ApiKeys`). */
-export type SourceId = 'unsplash' | 'pexels' | 'pixabay' | 'openverse'
+/** Les sources d'images/vidéos. */
+export type SourceId = 'unsplash' | 'pexels' | 'pixabay'
 
 /** Type de média téléchargé. Le switch de l'UI bascule entre les deux. */
 export type MediaType = 'photo' | 'video'
@@ -56,7 +56,7 @@ export interface ProgressEvent {
 }
 
 export type SourceError =
-  /** HTTP 429 / quota épuisé (Openverse : aussi 401, Unsplash : aussi 403). */
+  /** HTTP 429 / quota épuisé (Unsplash : aussi 403). */
   | { type: 'rate_limit'; message: string }
   /** Autre erreur API : clé invalide, 4xx/5xx, réponse inattendue, réseau. */
   | { type: 'api'; message: string }

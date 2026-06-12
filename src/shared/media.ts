@@ -6,8 +6,8 @@
  * `node:*` / `electron` → importable sans risque par le renderer (web) comme par
  * le process main.
  *
- * - Le renderer s'en sert pour **griser** les sources sans vidéo (Unsplash,
- *   Openverse) quand le switch est sur « Vidéos ».
+ * - Le renderer s'en sert pour **griser** les sources sans vidéo (Unsplash)
+ *   quand le switch est sur « Vidéos ».
  * - Le downloader s'en sert comme **double sécurité** (filtre les sources non
  *   capables avant de lancer une recherche vidéo).
  */

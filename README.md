@@ -4,7 +4,7 @@ Application **desktop locale** (Windows) qui télécharge en masse des **images 
 
 À partir d'un mot-clé (ex. « ramen », « tokyo night », « hands cooking »), l'app interroge plusieurs banques gratuites, télécharge les résultats dans un sous-dossier dédié, et les range dans un dossier central surveillé par [Immich](https://immich.app/) (recherche IA) et lié comme _bin_ dans Adobe Premiere Pro.
 
-Un **switch Photos / Vidéos** en haut de l'app bascule le type de média téléchargé. En mode Vidéos, les sources qui n'ont pas d'API vidéo (Unsplash, Openverse) sont automatiquement grisées.
+Un **switch Photos / Vidéos** en haut de l'app bascule le type de média téléchargé. En mode Vidéos, les sources qui n'ont pas d'API vidéo (Unsplash) sont automatiquement grisées.
 
 > App **perso, mono-utilisateur, sans déploiement ni authentification**. Pensée pour le PC de montage (Windows).
 
@@ -19,7 +19,7 @@ Cette app est **le premier maillon de la chaîne** : elle télécharge des image
 ## Fonctionnalités
 
 - **Photos ou vidéos** : un switch en haut bascule le type de média téléchargé.
-- Recherche par **mot-clé** sur 4 banques en parallèle (2 pour la vidéo : Pexels, Pixabay).
+- Recherche par **mot-clé** sur 3 banques en parallèle (2 pour la vidéo : Pexels, Pixabay).
 - Choix du **nombre de fichiers par source** et activation/désactivation source par source.
 - En mode vidéo, sélection automatique de la résolution **~1080p** (plus petit côté).
 - Rangement automatique : `{destination}/{AAAA-MM-JJ-motclé}/`, fichiers préfixés par source (`unsplash_<id>.jpg`, …).
@@ -28,16 +28,15 @@ Cette app est **le premier maillon de la chaîne** : elle télécharge des image
 - **Idempotence douce** : une image déjà présente n'est pas re-téléchargée.
 - Interface **trilingue** : 🇬🇧 EN (défaut) · 🇫🇷 FR · 🇯🇵 日本語.
 
-## Sources d'images
+## Sources
 
-| Source                                      | Clé API requise   | Photo | Vidéo | Licence / filtre                                                     |
-| ------------------------------------------- | ----------------- | :---: | :---: | -------------------------------------------------------------------- |
-| [Unsplash](https://unsplash.com/developers) | Oui (Access Key)  | ✅ | ❌ | Libre, sans attribution obligatoire                                  |
-| [Pexels](https://www.pexels.com/api/)       | Oui               | ✅ | ✅ | Libre, sans attribution obligatoire                                  |
-| [Pixabay](https://pixabay.com/api/docs/)    | Oui               | ✅ | ✅ | Libre, sans attribution obligatoire                                  |
-| [Openverse](https://api.openverse.org/)     | **Non** (anonyme) | ✅ | ❌ | Filtre `license=cc0,pdm` → CC0 + domaine public, usage commercial OK |
+| Source                                      | Clé API requise  | Photo | Vidéo | Licence              |
+| ------------------------------------------- | ---------------- | :---: | :---: | -------------------- |
+| [Unsplash](https://unsplash.com/developers) | Oui (Access Key) | ✅ | ❌ | Libre, sans attribution obligatoire |
+| [Pexels](https://www.pexels.com/api/)       | Oui              | ✅ | ✅ | Libre, sans attribution obligatoire |
+| [Pixabay](https://pixabay.com/api/docs/)    | Oui              | ✅ | ✅ | Libre, sans attribution obligatoire |
 
-> **Vidéos** : seules **Pexels** (`/videos/search`) et **Pixabay** (`/api/videos/`) exposent une API vidéo. Unsplash et Openverse n'en ont pas → grisées en mode Vidéos. Les fichiers sont nommés `pexels_<id>.mp4`, `pixabay_<id>.mp4` et rangés dans le **même** sous-dossier que les photos.
+> **Vidéos** : seules **Pexels** (`/videos/search`) et **Pixabay** (`/api/videos/`) exposent une API vidéo. Unsplash n'en a pas → grisée en mode Vidéos. Les fichiers sont nommés `pexels_<id>.mp4`, `pixabay_<id>.mp4` et rangés dans le **même** sous-dossier que les photos.
 
 > Les clés API se renseignent **dans l'app** (panneau Réglages), pas dans un fichier `.env`. Elles sont stockées localement dans `config.json` (voir ci-dessous).
 
@@ -63,7 +62,7 @@ pnpm install
 
 ## Configuration des clés API
 
-Au premier lancement, si des clés manquent, l'app ouvre automatiquement le **panneau Réglages**. Y renseigner les clés Unsplash / Pexels / Pixabay (Openverse n'en demande pas). Le dossier de destination se choisit directement dans le formulaire principal (champ + bouton « Parcourir… ») ; le dernier dossier utilisé est mémorisé et pré-rempli au lancement suivant.
+Au premier lancement, si des clés manquent, l'app ouvre automatiquement le **panneau Réglages**. Y renseigner les clés Unsplash / Pexels / Pixabay. Le dossier de destination se choisit directement dans le formulaire principal (champ + bouton « Parcourir… ») ; le dernier dossier utilisé est mémorisé et pré-rempli au lancement suivant.
 
 Les réglages sont persistés dans `config.json`, situé dans le dossier `userData` d'Electron :
 
@@ -76,7 +75,6 @@ Les réglages sont persistés dans `config.json`, situé dans le dossier `userDa
     "unsplash": "", // Access Key (Client-ID)
     "pexels": "",
     "pixabay": ""
-    // Openverse : pas de clé (source anonyme)
   },
   "lastDestination": "D:\\BRoll", // pré-remplit le champ destination
   "language": "en" // "en" | "fr" | "ja"
@@ -129,7 +127,7 @@ image-auto-downloader/
     │   ├── ipc.ts           # handlers IPC
     │   ├── config.ts        # lecture/écriture config.json
     │   ├── downloader.ts    # orchestration des 4 sources
-    │   └── sources/         # unsplash / pexels / pixabay / openverse
+    │   └── sources/         # unsplash / pexels / pixabay
     ├── preload/             # contextBridge (API sûre exposée au renderer)
     └── renderer/            # UI vanilla (HTML/CSS/TS) + i18n
 ```
@@ -146,4 +144,4 @@ image-auto-downloader/
 
 ## Licence
 
-Projet personnel, non distribué. Les images téléchargées proviennent de sources libres de droit ; le filtre Openverse `cc0,pdm` garantit l'absence d'attribution obligatoire et l'usage commercial.
+Projet personnel, non distribué. Les images et vidéos téléchargées proviennent de banques libres de droit, sans attribution obligatoire et utilisables commercialement.

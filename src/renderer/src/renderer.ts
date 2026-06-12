@@ -12,11 +12,11 @@ import type {
 import { supportsVideo } from '../../shared/media'
 import { applyTranslations, getLanguage, initLanguage, setLanguage, t } from './i18n'
 
-/** Les 3 sources nécessitant une clé (Openverse est anonyme). */
+/** Les sources nécessitant une clé. */
 const API_KEY_IDS: ApiKeyId[] = ['unsplash', 'pexels', 'pixabay']
 
-/** Les 4 sources, dans l'ordre d'affichage. */
-const SOURCE_IDS: SourceId[] = ['unsplash', 'pexels', 'pixabay', 'openverse']
+/** Les sources, dans l'ordre d'affichage. */
+const SOURCE_IDS: SourceId[] = ['unsplash', 'pexels', 'pixabay']
 
 /** L'utilisateur a-t-il édité le sous-dossier à la main ? (stoppe l'auto-remplissage) */
 let subFolderEdited = false
@@ -224,7 +224,7 @@ function setMediaType(next: MediaType): void {
 
 /**
  * Grise (et désactive) les sources sans API pour le type courant : en mode vidéo,
- * Unsplash et Openverse deviennent indisponibles ; on rétablit tout en mode photo.
+ * Unsplash devient indisponible ; on rétablit tout en mode photo.
  */
 function applySourceAvailability(): void {
   for (const id of SOURCE_IDS) {

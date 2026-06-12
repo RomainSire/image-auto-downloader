@@ -16,7 +16,7 @@ type Dict = Record<string, string>
 
 const dict: Record<Lang, Dict> = {
   en: {
-    'app.subtitle': 'Royalty-free b-roll — Unsplash · Pexels · Pixabay · Openverse',
+    'app.subtitle': 'Royalty-free b-roll — Unsplash · Pexels · Pixabay',
     'settings.button': '⚙ Settings',
     'field.keyword': 'Search (keyword)',
     'field.keyword.ph': 'e.g. ramen, tokyo night, hands cooking…',
@@ -38,7 +38,6 @@ const dict: Record<Lang, Dict> = {
     'settings.key.pixabay': 'Pixabay API key',
     'settings.key.ph.clientId': 'Client-ID…',
     'settings.key.ph.apikey': 'API Key…',
-    'settings.openverseNote': 'Openverse requires no key (anonymous source).',
     'settings.language': 'Language',
     'settings.close': 'Close',
     'settings.save': 'Save',
@@ -66,7 +65,7 @@ const dict: Record<Lang, Dict> = {
     'error.api': 'API error'
   },
   fr: {
-    'app.subtitle': 'B-roll libre de droit — Unsplash · Pexels · Pixabay · Openverse',
+    'app.subtitle': 'B-roll libre de droit — Unsplash · Pexels · Pixabay',
     'settings.button': '⚙ Réglages',
     'field.keyword': 'Recherche (mot-clé)',
     'field.keyword.ph': 'ex. ramen, tokyo night, hands cooking…',
@@ -88,7 +87,6 @@ const dict: Record<Lang, Dict> = {
     'settings.key.pixabay': 'Clé API Pixabay',
     'settings.key.ph.clientId': 'Client-ID…',
     'settings.key.ph.apikey': 'API Key…',
-    'settings.openverseNote': 'Openverse ne nécessite aucune clé (source anonyme).',
     'settings.language': 'Langue',
     'settings.close': 'Fermer',
     'settings.save': 'Enregistrer',
@@ -116,7 +114,7 @@ const dict: Record<Lang, Dict> = {
     'error.api': 'Erreur API'
   },
   ja: {
-    'app.subtitle': 'ロイヤリティフリー B-roll — Unsplash · Pexels · Pixabay · Openverse',
+    'app.subtitle': 'ロイヤリティフリー B-roll — Unsplash · Pexels · Pixabay',
     'settings.button': '⚙ 設定',
     'field.keyword': '検索（キーワード）',
     'field.keyword.ph': '例：ramen、tokyo night、hands cooking…',
@@ -138,7 +136,6 @@ const dict: Record<Lang, Dict> = {
     'settings.key.pixabay': 'Pixabay API キー',
     'settings.key.ph.clientId': 'Client-ID…',
     'settings.key.ph.apikey': 'API Key…',
-    'settings.openverseNote': 'Openverse はキー不要です（匿名ソース）。',
     'settings.language': '言語',
     'settings.close': '閉じる',
     'settings.save': '保存',

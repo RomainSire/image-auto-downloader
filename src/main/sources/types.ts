@@ -24,13 +24,12 @@ export interface MediaSource {
   id: SourceId
   /**
    * Renvoie jusqu'à `count` photos pour `keyword`, en paginant si besoin.
-   * `apiKey` est ignoré par les sources anonymes (Openverse → chaîne vide).
    * En cas d'échec, lève une `SourceException` (mappée en `SourceError`).
    */
   search(keyword: string, count: number, apiKey: string): Promise<MediaHit[]>
   /**
    * Idem pour les **vidéos** — présent uniquement sur les sources à API vidéo
-   * (Pexels, Pixabay). Absent sur Unsplash/Openverse (grisées en mode vidéo).
+   * (Pexels, Pixabay). Absent sur Unsplash (grisée en mode vidéo).
    */
   searchVideos?(keyword: string, count: number, apiKey: string): Promise<MediaHit[]>
 }

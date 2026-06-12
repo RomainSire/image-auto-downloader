@@ -1,16 +1,14 @@
 import type { SourceId } from '../../shared/types'
-import type { ImageSource } from './types'
+import type { MediaSource } from './types'
 import { unsplash } from './unsplash'
 import { pexels } from './pexels'
 import { pixabay } from './pixabay'
-import { openverse } from './openverse'
 
-/** Registre des 4 sources, indexé par `SourceId` (consommé par le downloader). */
-export const sources: Record<SourceId, ImageSource> = {
+/** Registre des sources, indexé par `SourceId` (consommé par le downloader). */
+export const sources: Record<SourceId, MediaSource> = {
   unsplash,
   pexels,
-  pixabay,
-  openverse
+  pixabay
 }
 
 export type { ImageHit, ImageSource } from './types'
