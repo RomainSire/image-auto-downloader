@@ -1,5 +1,16 @@
 @import './base.css';
 
+/* Palette de marque, dérivée du logo (dégradé cyan → magenta). */
+:root {
+  --brand-cyan: #22d3ee;
+  --brand-pink: #ec6ff5;
+  /* 45deg : cyan en bas-gauche → rose en haut-droite. */
+  --brand-gradient: linear-gradient(45deg, var(--brand-cyan) 0%, var(--brand-pink) 100%);
+  /* Accent plein (focus, bordures) : cyan, lisible sur fond sombre. */
+  --brand-accent: #22d3ee;
+  --brand-accent-soft: rgba(34, 211, 238, 0.16);
+}
+
 body {
   min-height: 100vh;
   user-select: none;
@@ -41,8 +52,11 @@ body {
 .app-title {
   font-size: 26px;
   font-weight: 700;
-  color: var(--ev-c-text-1);
   letter-spacing: -0.02em;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .app-subtitle {
@@ -67,10 +81,14 @@ body {
 .card {
   width: 100%;
   max-width: 640px;
-  background: var(--color-background-soft);
-  border: 1px solid var(--ev-c-gray-3);
+  border: 2px solid transparent;
   border-radius: 14px;
   padding: 24px 26px 26px;
+  /* Bordure dégradée complète (rappel du logo) : fond en padding-box,
+     dégradé en border-box → respecte le border-radius. */
+  background:
+    linear-gradient(var(--color-background-soft), var(--color-background-soft)) padding-box,
+    var(--brand-gradient) border-box;
 }
 
 .status {
@@ -121,8 +139,8 @@ body {
 }
 
 .media-btn.is-active {
-  background: #4f7cff;
-  color: #fff;
+  background: var(--brand-cyan);
+  color: #0b1220;
 }
 
 /* ---- Formulaire de téléchargement ---- */
@@ -180,6 +198,11 @@ body {
   cursor: pointer;
 }
 
+/* Case à cocher aux couleurs de la marque. */
+.source-enabled {
+  accent-color: var(--brand-cyan);
+}
+
 .source-name {
   font-size: 14px;
   font-weight: 600;
@@ -234,7 +257,7 @@ body {
 }
 
 .source-count:focus {
-  border-color: #4f7cff;
+  border-color: var(--brand-accent);
 }
 
 .source-progress {
@@ -247,7 +270,7 @@ body {
 }
 
 .source-progress[data-state='downloading'] {
-  color: #60a5fa;
+  color: var(--brand-accent);
 }
 
 .source-progress[data-state='done'] {
@@ -368,12 +391,13 @@ body {
 }
 
 .btn-primary {
-  background-color: #4f7cff;
-  color: #fff;
+  background: var(--brand-cyan);
+  color: #0b1220;
+  font-weight: 700;
 }
 
 .btn-primary:hover {
-  background-color: #3f6aff;
+  filter: brightness(1.07);
 }
 
 .btn-secondary {
@@ -463,7 +487,7 @@ body {
 }
 
 .field-input:focus {
-  border-color: #4f7cff;
+  border-color: var(--brand-accent);
 }
 
 .field-note {
@@ -504,8 +528,8 @@ body {
 }
 
 .lang-btn.is-active {
-  background: #4f7cff;
-  color: #fff;
+  background: var(--brand-cyan);
+  color: #0b1220;
 }
 
 .settings-actions {
