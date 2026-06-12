@@ -66,16 +66,20 @@ async function loadConfig(): Promise<void> {
   }
 }
 
-/** Affiche le bandeau d'état des clés API (manquantes / toutes OK). */
+/**
+ * Bandeau d'état des clés API : affiché **uniquement** s'il manque des clés.
+ * Quand tout est configuré, le bandeau est masqué (pas de message « tout OK »).
+ */
 function setMainStatus(missing: ApiKeyId[]): void {
   const status = document.getElementById('apiStatus')
   if (!status) return
   if (missing.length) {
     status.textContent = t('status.missingKeys', { n: missing.length, keys: missing.join(', ') })
     status.className = 'status status-error'
+    status.hidden = false
   } else {
-    status.textContent = t('status.allKeysOk')
-    status.className = 'status status-ok'
+    status.textContent = ''
+    status.hidden = true
   }
 }
 
